@@ -1,0 +1,56 @@
+name: "Create Terraform environment"
+description: "Creates a Terraform environment"
+inputs:
+  environment-name:
+    description: "The ID of the environment"
+    required: true
+  module-file:
+    description: "URL/path to Terraform module archive"
+    required: true
+  variables-file:
+    description: "YAML/JSON file containing template variables"
+    required: false
+    default: "-"
+  environment-file:
+    description: "YAML/JSON file containing environment variables to pass to the Terraform process"
+    required: false
+    default: "-"
+  environment-mapping:
+    description: |
+        A whitespace-delimited list of strings. For each item:
+
+        * If it is of the form `k=v`, then the value of the environment variable `k` is passed
+          as environment variable `v` to Terraform
+        * Otherwise, let the value be `x`; then the environment variable `x` is passed as-is
+          to Terraform
+
+        This effectively passes environment variables, visible to the CI/CD platform,
+        as environment variables to Terraform. Useful, among others, for
+        passing Cloud credentials - stored in the CI/CD platform - to Terraform.
+    required: false
+    default: "-"
+  outputs-file:
+    description: "Path to generated outputs file"
+    required: false
+    default: "-"
+outputs:
+  environment-data:
+    description: "The environment's outputs"
+runs:
+  using: "docker"
+  image: "docker://isaaccfy/cfy-ci:latest"
+  entrypoint: "cfyci"
+  args:
+    - 'terraform'
+    - '--name'
+    - ${{ inputs.environment-name }}
+    - '--module'
+    - ${{ inputs.module-file }}
+    - '--variables'
+    - ${{ inputs.variables-file }}
+    - '--environment'
+    - ${{ inputs.environment-file }}
+    - '--environment-mapping'
+    - ${{ inputs.environment-mapping }}
+    - '--outputs-file'
+    - ${{ inputs.outputs-file }}
