@@ -44,7 +44,7 @@ jobs:
       - name: Upload to S3
         run: aws s3 cp /tmp/terraform-module.tar.gz s3://cloudify-cicd-public/
       - name: Create environment
-        uses: cloudify-cosmo/terraform-action@v1.0
+        uses: cloudify-cosmo/terraform-action@v1.1
         with:
           environment-name: "test-terraform-$GITHUB_RUN_ID"
           module-file: https://cloudify-cicd-public.s3.amazonaws.com/terraform-module.tar.gz
