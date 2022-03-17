@@ -12,9 +12,11 @@ Cloudify documentation (see [More Information](#more-information) below).
 | Name | Description
 |------|------------
 | `module-file` | URL/path to Terraform module archive
+| `module-source-path` | path to Terraform module inside the archive
 | `variables-file` | YAML/JSON file containing template variables
 | `environment-file` | YAML/JSON file containing environment variables to pass to the Terraform process
 | `environment-mapping` | A whitespace-delimited list of strings denoting environment variables to pass through (see below)
+| `plan` | boolean flag to indicate whether to apply the module or just execute plan
 
 ## Notes
 
@@ -44,9 +46,10 @@ jobs:
       - name: Upload to S3
         run: aws s3 cp /tmp/terraform-module.tar.gz s3://cloudify-cicd-public/
       - name: Create environment
-        uses: cloudify-cosmo/terraform-action@v1.1
+        uses: cloudify-cosmo/terraform-action@v1.2
         with:
           environment-name: "test-terraform-$GITHUB_RUN_ID"
+          labels: some_label:label_value,yet_another_label:some_value
           module-file: https://cloudify-cicd-public.s3.amazonaws.com/terraform-module.tar.gz
           variables-file: tf/test-params/integration.yaml
           environment-mapping: AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY
@@ -59,7 +62,7 @@ in order to make the Terraform module available for Cloudify Manager to download
 
 As the Terraform AWS Provider supports obtaining AWS credentials from environment variables,
 we define those variables based on GitHub Secrets, and use the `environment-mapping` input so
-the variables are passed as-is to the Terraform executable. 
+the variables are passed as-is to the Terraform executable.
 
 # More Information
 
