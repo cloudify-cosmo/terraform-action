@@ -8,8 +8,18 @@ inputs:
   environment-name:
     description: Name of Cloudify environment to create
     required: true
+  labels:
+    description: |
+      A labels list of the form <key>:<value>,<key>:<value>.
+      Any comma and colon in <value> must be escaped with \.
+      The labels’ keys are saved in lowercase.
+    required: false
+    default: "-"
   module-file:
     description: URL/path to Terraform module archive
+    required: true
+  module-source-path:
+    description: path to Terraform module inside the archive
     required: true
   variables-file:
     description: YAML/JSON file containing template variables
@@ -34,6 +44,11 @@ inputs:
         passing Cloud credentials - stored in the CI/CD platform - to Terraform
     required: false
     default: "-"
+  plan:
+    description: |
+      boolean flag to indicate whether to apply the module or just execute plan
+    required: false
+    default: "false"
   outputs-file:
     description: |
       Path to JSON file to receive the Cloudify environment's outputs
@@ -45,19 +60,25 @@ outputs:
     description: The Cloudify environment's outputs and capabilties
 runs:
   using: docker
-  image: docker://cloudifyplatform/cloudify-cli:5.1.1
+  image: docker://cloudifyplatform/cloudify-cli:6.3.0
   entrypoint: cfyci
   args:
     - terraform
     - '--name'
     - ${{ inputs.environment-name }}
+    - '--labels'
+    - ${{ inputs.labels }}
     - '--module'
     - ${{ inputs.module-file }}
+    - '--module-path'
+    - ${{ inputs.module-source-path }}
     - '--variables'
     - ${{ inputs.variables-file }}
     - '--environment'
     - ${{ inputs.environment-file }}
     - '--environment-mapping'
     - ${{ inputs.environment-mapping }}
+    - '--plan'
+    - ${{ inputs.plan }}
     - '--outputs-file'
     - ${{ inputs.outputs-file }}
