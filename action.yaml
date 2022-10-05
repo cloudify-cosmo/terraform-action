@@ -49,6 +49,11 @@ inputs:
       boolean flag to indicate whether to apply the module or just execute plan
     required: false
     default: "false"
+  cost:
+    description: |
+      boolean flag to indicate whether to apply the module or just execute cost
+    required: false
+    default: "false"
   outputs-file:
     description: |
       Path to JSON file to receive the Cloudify environment's outputs
@@ -60,7 +65,7 @@ outputs:
     description: The Cloudify environment's outputs and capabilties
 runs:
   using: docker
-  image: docker://cloudifyplatform/cloudify-cli:6.3.0
+  image: docker://cloudifyplatform/cloudify-cli:6.4.0
   entrypoint: cfyci
   args:
     - terraform
@@ -80,5 +85,7 @@ runs:
     - ${{ inputs.environment-mapping }}
     - '--plan'
     - ${{ inputs.plan }}
+    - '--cost'
+    - ${{ inputs.cost }}
     - '--outputs-file'
     - ${{ inputs.outputs-file }}

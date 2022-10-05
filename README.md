@@ -17,6 +17,7 @@ Cloudify documentation (see [More Information](#more-information) below).
 | `environment-file` | YAML/JSON file containing environment variables to pass to the Terraform process
 | `environment-mapping` | A whitespace-delimited list of strings denoting environment variables to pass through (see below)
 | `plan` | boolean flag to indicate whether to apply the module or just execute plan
+| `cost` | boolean flag to indicate whether to apply the module or just execute cost
 
 ## Notes
 
@@ -46,7 +47,7 @@ jobs:
       - name: Upload to S3
         run: aws s3 cp /tmp/terraform-module.tar.gz s3://cloudify-cicd-public/
       - name: Create environment
-        uses: cloudify-cosmo/terraform-action@v1.2
+        uses: cloudify-cosmo/terraform-action@v1.3
         with:
           environment-name: "test-terraform-$GITHUB_RUN_ID"
           labels: some_label:label_value,yet_another_label:some_value
